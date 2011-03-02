@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+#
+# warsito - pabrik paket on
+#
+
+import os
+from optparse import OptionParser
+from libwarsi import BuildOnPackage
+import gettext
+import apt
+
+gettext.textdomain('blank')
+_ = gettext.gettext
+seed = "/etc/warsito/desktop-pattimura.seed"
+configfile = "/etc/warsito.conf"
+
+class CreatePackages:	
+    def __init__(self):
+        self.build = BuildOnPackage()
+
+    def create(self, pkgs):
+        on_pkgs = []
+        for pkg in pkgs:
+            config = self.build.WarsitoConfig(configfile)
+            on_pkg = self.build.create(pkg, seed, config)
+            
+            on_pkgs.append(on_pkg)
+
+        return on_pkgs
+
+    def syncrepo(self):
+        
+def main():
+    usage = _('usage: warsito create name_package')
+    desc = _('warsito is a simple command line interface for create blankon packages.')
+    parser = OptionParser(usage=usage, description=desc)
+    opts, args = parser.parse_args()
+
+    if not args:
+        parser.print_help()
+        exit(1)
+	
+    if len(args)<2:
+        parser.print_help()
+        exit(1)
+
+    command = args[0]
+    build = CreatePackages()
+    repo = Repository()
+
+    if command == 'create':
+        build.create(args[1:])
+    elif command == 'syncrepo':
+        repo.syncrepo(args[1:])
+    else:
+        print _('Command {0} is not supported. type -h for help.').format(command)
+
+if __name__ == '__main__':
+    main()

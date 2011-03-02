@@ -1,0 +1,223 @@
+Task-Per-Derivative: 1
+Task-Section: user
+Task-Description: BlankOn desktop
+Task-Extended-Description: This task provides the BlankOn desktop environment.
+Task-Key: blankon-desktop
+Task-Seeds: desktop-common
+
+= Hardware and Architecture Support =
+
+== Architecture-independent ==
+
+ * libgd2-xpm # force the xpm-enabled version for edubuntu compatibility
+
+Bluetooth:
+
+ * (gnome-bluetooth) # desktop bluetooth support
+ * (bluez-gstreamer)
+
+= Network Services =
+
+Basic network services and Windows integration.
+
+ * (avahi-autoipd)     # IPv4 link-local interface configuration support
+ * (network-manager-gnome) # see NetworkRoaming spec
+ * (network-manager-pptp)
+ * (network-manager-pptp-gnome)
+
+= GUI infrastructure =
+
+ * xterm                         # Provide a backup terminal and complete X env.
+
+Extra fonts (should be common, but not so for space reasons):
+
+ * (ttf-wqy-microhei)
+ * (ttf-unfonts-core)
+ * (ttf-liberation)
+
+Input methods:
+
+ * (im-switch)
+ * (scim) 
+ * (scim-modules-table) 
+ * (scim-tables-indonesian)
+
+= Desktop GNOME Apps =
+
+We've chosen GNOME as our desktop user interface of choice. Rather than using the meta-packages they are deliberately expanded so that we can select things a bit better.
+
+ * (apport-gtk)
+ * desktop-file-utils
+ * eog
+ * (evolution)
+ * (evolution-plugins)
+ * (evolution-exchange)
+ * (evolution-webcal)
+ * file-roller
+ * (empathy)
+ * (telepathy-idle)        # basic IRC support for empathy
+ * gcalctool
+ * gconf-editor
+ * gdm
+ * (gdm-guest-session)
+ * gedit
+ * gnome-about
+ * gnome-applets
+ #* software-center
+ * (app-install-data-partner)
+ * (gnome-codec-install)    # new default codec installation tool (from debian)
+ * (transmission-gtk)       # simple GNOME frontend for bittorrent downloads
+ * gnome-control-center
+ * system-config-printer-gnome
+ * gnome-icon-theme
+ * gnome-media
+ * gnome-menus
+ * gnome-nettool            # part of 2.8
+ * gnome-panel
+ * gnome-session
+ * seahorse
+ * (libpam-gnome-keyring)
+ * gnome-system-monitor     # SebastienBacher
+ * gnome-power-manager		# OliverGrawert finally ready for shipment
+ * gnome-system-tools
+ * gnome-terminal
+ * baobab
+ * gnome-screenshot
+ * gnome-search-tool
+ * gnome-system-log
+ * (gnome-user-guide)
+ * gucharmap               # SebastienBacher
+ * checkbox-gtk
+ * language-selector	   # MichaelVogt
+ * metacity                # SebastienBacher
+ * (compiz) [i386 powerpc amd64]		   # compiz is our default WM 'mkay
+ * (chromium-browser)
+ * nautilus                # SebastienBacher
+ * nautilus-sendto
+ * (nautilus-share)
+ #* (banshee)
+ #* (banshee-extension-ubuntuonemusicstore)
+ * (brasero)		   # Oliver Grawert
+ * rarian-compat
+ * alacarte		   # default menu editor
+ * ssh-askpass-gnome
+ * synaptic                # default GUI package manager
+ * software-properties-gtk # default GUI sources.list editor
+ * (totem)
+ * update-manager
+ * update-notifier
+ * (vino) # vnc server
+ * yelp
+ * zenity
+ * (xdg-utils)		   # useful utilities
+ * xdg-user-dirs
+ * xdg-user-dirs-gtk
+ * pulseaudio-esound-compat
+ * pulseaudio
+ * (pulseaudio-module-gconf)
+ * (pulseaudio-module-x11)
+ * (pulseaudio-module-bluetooth)
+ * (gvfs-fuse)			# let non-GNOME apps see GVFS via fuse
+ #* launchpad-integration	# Needed to show the launchpad menu items
+ * (gnome-disk-utility)
+
+Games: We only ship a few by default.
+ * (aisleriot)
+ #* (gnome-mahjongg)
+ * (gnomine)
+ * (gnome-sudoku)
+ * (quadrapassel)
+ #* (gbrainy)
+
+Themes: we will ship only the very best looking themes. We won't ship everything that Debian ships, just a custom package that includes the themes we want. These packages are included for size guidance until we have BlankOn-specific packages.
+
+ * ombilin-theme
+ * londe-icon-theme
+ * blankon-contextual-desktop
+ * pattimura-contextual-desktop-theme
+ * blankon-artwork
+ * blankon-sounds
+ * gnome-session-canberra	# Needed to make login/logout sounds audible.
+ #* (blankon-branding-gimp)
+ #* (blankon-branding-inkscape)
+ #* (blankon-branding-launchpad-integration)
+
+The gstreamer0.10 packages we want to install:
+
+ * gstreamer0.10-alsa
+ * gstreamer0.10-plugins-base-apps
+ * gstreamer0.10-pulseaudio
+
+For BlankOn we need libsdl1.2debian-pulseaudio for the above gstreamer0.10-plugins-base-apps < libtheora-dev < libsdl1.2-dev < libsdl1.2debian.
+
+ * libsdl1.2debian # tiny and needed for clean CDROM upgrades
+ * libsdl1.2debian-pulseaudio
+
+Accessibility tools:
+
+ * (gnome-accessibility-themes)
+ * (gnome-mag)
+ * (gnome-orca)
+ * (onboard)
+ * (brltty)
+ * (brltty-x11)
+ * (xcursor-themes)
+ * (espeak)
+ * (speech-dispatcher)
+ * (mousetweaks)
+ * (libgail-gnome-module) # Needed for libbonoboui/libgnomeui widget accessibility
+
+= Other Desktop GUI Apps =
+
+ * (libreoffice-style-galaxy) [i386 amd64 powerpc]  # before OOo to avoid openoffice.org-style-default
+ * (libreoffice-gnome) [i386 amd64 powerpc]
+ * (libreoffice-writer) [i386 amd64 powerpc]
+ * (libreoffice-calc) [i386 amd64 powerpc]
+ * (libreoffice-impress) [i386 amd64 powerpc]
+ * (libreoffice-math) [i386 amd64 powerpc]
+ * (libreoffice-l10n-id) [i386 amd64 powerpc]
+ * (simple-scan)
+ * evince
+ * (gnome-screensaver) # recommends to allow for xscreensaver to be used
+ * xscreensaver-gl # MRS, we will only ship a subset of the screensavers from rss-glx and xscreensaver
+ * xscreensaver-data # subset package for the non-gl screensavers we ship
+ * screensaver-default-images
+ * (tsclient)      # rdesktop/vnc/xdmcp client gui
+ * (vinagre)      # needed by tsclient
+ #* (tomboy) [i386 powerpc amd64 armel]  # Sebastian Dröge, approved by mdz
+ * (shotwell)
+ * (jockey-gtk) # enable non-free graphics and other drivers easily
+ * (usb-creator-gtk) [i386 amd64]
+ * (computer-janitor-gtk)
+ * (pitivi)
+
+Desktop Experience:
+ * notify-osd           # backend for libnotify
+ #* (indicator-messages)
+ * (evolution-indicator)
+ #* indicator-applet-session
+
+= Documentation =
+
+ * doc-base			# integrates with scrollkeeper
+ * (blankon-docs)
+
+= Development =
+
+Here we provide a minimal development environment sufficient to build kernel
+drivers, so that this is possible on the live CD and in scenarios where
+it is problematic to get these packages onto the installed system in order
+to compile a driver. -mdz
+
+ * (gcc)
+ * (make)
+ * (linux-headers-generic) [i386]
+ * (linux-headers-generic) [amd64]
+ * (linux-headers-dove) [armel]
+
+= Other =
+
+ * blankon-desktop # metapackage for everything here
+ * (blankon-example-content)
+ * (libwmf0.2-7-gtk)
+ * (pattimura-plymouth-theme)		# Pattimura feature goal
