@@ -20,6 +20,8 @@ import warsiexceptions
 import urllib
 import apt.progress.gtk2
 from apt_inst import debExtractControl
+import ConfigParser
+from libwarsi import OnPackage
 
 class BuildOnPackage(object):
     """
@@ -31,11 +33,6 @@ class BuildOnPackage(object):
     def WarsitoConfig(self, configfile):
         """Warsito configurations
 
-        Warsito configuration :
-        DIST="distribution name"
-        RESULTDIR="/var/cache/warsito/result"
-        ARCH="i386,amd64,armel"
-
         Arguments:
         configfile - A string, config file destination
 
@@ -46,32 +43,23 @@ class BuildOnPackage(object):
         config = {}
         arch = []
 
+        configparser = ConfigParser.ConfigParser()
         try:
-            f = open(configfile, "r")
-            try:
-                lines = f.readlines()
-                for line in lines:
-                    item = line.split("=")
-                    value = item[1].replace('"', "")
-                    
-                    if item[0] == "DIST":
-                        config['DIST'] = value
-                    elif item[0] == "DISTVERSION":
-                        config['VERSION'] = value
-                    elif item[0] == "RESULTDIR":
-                        config['RESULTDIR'] = value
-                    elif item[0] == "ARCH":
-                        arch_item = value.split(",")
-                        for item_arch in arch_item:
-                            arch.append(item_arch)
-
-                        config['ARCH'] = arch
-                    else:
-                        raise ex.BuildGeneralError(_("unkown configuration item"))
-            finally:
-                f.close()
-        except IOError:
-            raise ex.WarsiIOError(_("Cannot read warsito configuration"))        
+            configparser.read(configfile)
+            
+            for section in configparser.sections():
+                options = Config.options(section)
+                for option in options:
+                    try:
+                        if option == "ARCH":
+                            lines = Config.get(section, option)
+                            for line in lines:
+                                arch.append(line)
+                            config[option] = arch
+                            continue
+                        config[option] = Config.get(section, option)
+        except ConfigParser.Error:
+            raise ex.WarsiIOError(_("Cannot read warsito configuration"))
         
         return config
 
@@ -121,22 +109,34 @@ class BuildOnPackage(object):
 
         return on_pkg
 
-    def compress(self, pkgdir, resultdir):
+    def compress(self, pkgdir, resultdir, config):
         """Compres Package
 
         Compressing BlankOn Package with lzma, bz2, or gz archive.
 
         Arguments:
         pkg - A String, name in BlankOn Package
+        config - A Dict, Config Parser
 
         Returns:
         on - A String, BlankOn Package file
 
         """
-        fileon = pkgdir + ".on"
-        on = tarfile.open(fileon, 'w:bz2')
-        on.add(pkgdir)
-        on.close()
+
+        compression_type = config['COMPRESSION']
+
+        if not compression_type:
+            compression_type = "default"
+
+        if compression_type == "default":
+            
+        elif compression_type == "bz2":
+            fileon = pkgdir + ".on"
+            on = tarfile.open(fileon, 'w:bz2')
+            on.add(pkgdir)
+            on.close()
+        elif compression_type == "gz":
+            
 
         return on
 
@@ -298,7 +298,9 @@ class BuildOnPackage(object):
             try:
                 lines = f.readlines()
                 for line in lines:
-                    if line.startswith(" *"):
+                    if line.startwith(" #"):
+                        continue
+                    elif line.startswith(" *"):
                         item = line.split(" ")[1]
     
                         package = re.sub(r'[\()]', '', item)
@@ -315,21 +317,43 @@ class Repository(object):
     Repository -- Class for syncronizing BlankOn Packages repository
     """
     
+    def listresultdir(self):
+
+    def listresultpath(self):
+    
     def sync(self):
         """Sync result packages to public repository
             
         """
 
-    def create_packages_info(self):
-        """Creating Packages.gz Information
+    def create_packages_info(self, config, pkgs):
+        """Creating Packages.info Information
 
         """
+        public_dir = config["PUBLICDIR"]
+        distdir = os.path.join(public_dir, config["DIST"])
+        ondir = os.path.join(distdir, config["ARCH"])
 
-    def create_packages_manifest(self):
-        """Creating Manifest.gz 
+        for on in os.listdir(ondir):
+            for pkg in pkgs:
+                on_name = on.split("_")[0]
 
-        """
-        
+                if on_name == pkg:
+                    info = OnPackage.show_info(on, pkg)
+                    md5sum = md5(open(on, "rb").read()).hexdigest()
+                    size = os.path.getsize(on)
+                    infofile = os.path.join(ondir, 'Packages.info')
+                    package_info = open(infofile, "a")
+                    package_info.write("[%s]" %info['Package'])
+                    package_info.write("Version: %s" %info['Version'])
+                    package_info.write("Architecture: %s" %info['Architecture'])
+                    package_info.write("Description: %s" %info['Description'])
+                    package_info.write("Section: %s" %info['Section'])
+                    package_info.write("Homepage: %s" %info['Homepage'])
+                    package_info.write("Filename: %s" %info['Filename'])
+                    package_info.write("Size: %s" %size)
+                    package_info.write("MD5sum: %s" %md5sum)
+
 class Utils(object):
     """
     Utilities

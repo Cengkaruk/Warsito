@@ -12,18 +12,18 @@ import apt
 
 gettext.textdomain('blank')
 _ = gettext.gettext
-seed = "/etc/warsito/desktop-pattimura.seed"
+baseseed = "/etc/warsito/desktop-pattimura.seed"
 configfile = "/etc/warsito.conf"
 
 class CreatePackages:	
     def __init__(self):
         self.build = BuildOnPackage()
 
-    def create(self, pkgs):
+    def create(self, seed):
         on_pkgs = []
         for pkg in pkgs:
             config = self.build.WarsitoConfig(configfile)
-            on_pkg = self.build.create(pkg, seed, config)
+            on_pkg = self.build.create(pkg, baseseed, config)
             
             on_pkgs.append(on_pkg)
 
